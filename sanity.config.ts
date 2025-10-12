@@ -4,10 +4,9 @@ import {visionTool} from '@sanity/vision'
 import {schemaTypes} from './schemaTypes'
 
 export default defineConfig({
-  name: 'default',
-  title: 'Unknown project',
-
-  projectId: 'theGoldSun',
+  name: 'theGoldSun',
+  title: 'the-gold-sun',
+  projectId: 'fat7bzrg',
   dataset: 'development',
 
   plugins: [structureTool(), visionTool()],
