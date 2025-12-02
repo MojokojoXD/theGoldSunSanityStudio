@@ -1,4 +1,4 @@
-import { defineType, defineField } from 'sanity';
+import {defineType, defineField} from 'sanity'
 
 export const ArticleType = defineType({
   name: 'article',
@@ -14,13 +14,20 @@ export const ArticleType = defineType({
     defineField({
       name: 'author',
       title: 'Author',
-      type: 'string',
+      type: 'reference',
+      to: [{type: 'author'}],
       validation: (rule) => rule.required(),
     }),
     {
-      name: 'published_on',
-      title: 'Date published',
-      type: 'datetime',
+      name: 'issue',
+      title: 'Issue',
+      type: 'reference',
+      weak: false,
+      to: [
+        {
+          type: 'issue',
+        },
+      ],
       validation: (rule) => rule.required(),
     },
     {
@@ -38,9 +45,9 @@ export const ArticleType = defineType({
         {
           name: 'attribution',
           title: 'Attribution',
-          type: 'string'
-        }
-      ]
+          type: 'string',
+        },
+      ],
     },
     {
       name: 'tags',
@@ -64,23 +71,52 @@ export const ArticleType = defineType({
           name: 'content_block',
           type: 'block',
           of: [
-            defineField( {
+            defineField({
               type: 'image',
               name: 'attribution',
               title: 'Header image',
               fields: [
-                defineField( {
+                defineField({
                   name: 'attribution',
                   title: 'Attribution',
-                  type: 'string'
-                })
-              ]
-            })
+                  type: 'string',
+                }),
+              ],
+            }),
           ],
         },
       ],
       validation: (rule) => rule.required(),
     },
+    defineField( {
+      name: 'slug',
+      type: 'slug',
+      title: 'Slug',
+      options: {
+        source: 'title',
+        slugify: input =>
+        {
+          const normalizedString = input.toLowerCase().replace( /\s+/g, '-' );
+          const timestamp =(Math.floor((Date.now() / 60000))).toString()
+
+          return encodeURI( normalizedString + '-' + timestamp );
+        }
+      }
+    })
+    ,
+    defineField({
+      name: 'isArchived',
+      type: 'boolean',
+      title: 'Archive',
+      description: 'Toggle this option to move article to the archive',
+    }),
+    defineField({
+      name: 'isVisible',
+      type: 'boolean',
+      title: 'Visibility',
+      initialValue: true,
+      description:
+        'Toggle this option to remove public access to article but not remove/delete it.',
+    }),
   ],
 })
-
